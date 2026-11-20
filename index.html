@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ultrasonic Radar System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f1f6f2;--card:#fff;--tx:#10201a;--mut:#52695b;--ln:#d3e0d7;--g:#0a8f33;--ac:#0a8f33;--acx:#fff;
+--hd:"Space Grotesk",system-ui,sans-serif;--mo:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#06100a;--card:#0e1c13;--tx:#d9f5df;--mut:#86ad90;--ln:#1d3a27;--g:#3df56a;--ac:#3df56a;--acx:#04100a}}
+:root[data-theme="dark"]{--bg:#06100a;--card:#0e1c13;--tx:#d9f5df;--mut:#86ad90;--ln:#1d3a27;--g:#3df56a;--ac:#3df56a;--acx:#04100a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.6 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;padding-bottom:84px}
+h1,h2,h3{font-family:var(--hd);margin:0;letter-spacing:-.01em}
+h1{font-size:28px;line-height:1.15}h1 span{color:var(--g)}h2{font-size:19px;margin-bottom:6px}
+.pane{display:none;padding:12px 14px;max-width:780px;margin:0 auto}.pane.on{display:block}
+.pane.on>*{animation:rise .6s both}.pane.on>*:nth-child(2){animation-delay:.08s}.pane.on>*:nth-child(3){animation-delay:.16s}.pane.on>*:nth-child(4){animation-delay:.24s}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.card{background:var(--card);border:1px solid var(--ln);border-radius:16px;padding:14px;margin-bottom:12px}
+canvas{width:100%;display:block;border-radius:14px;background:#04100a}
+#hero{box-shadow:0 0 40px rgba(61,245,106,.18);border:1px solid #1d3a27}
+.tag{font:500 11px var(--mo);color:var(--g);letter-spacing:.14em;text-transform:uppercase}
+.sub{color:var(--mut);margin:6px 0 0}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{font:500 12px var(--mo);border:1px solid var(--ln);background:var(--bg);color:var(--tx);border-radius:999px;padding:5px 10px;cursor:pointer}
+.chip.on{background:var(--ac);color:var(--acx);border-color:var(--ac)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center}
+.stats b{display:block;font:700 18px var(--hd);color:var(--g)}.stats span{font-size:11px;color:var(--mut)}
+.team{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mem{display:flex;gap:10px;align-items:center;background:var(--bg);border:1px solid var(--ln);border-radius:12px;padding:10px;transition:transform .25s,border-color .25s}
+.mem:hover{transform:translateY(-3px);border-color:var(--g)}
+.av{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font:700 15px var(--hd);background:linear-gradient(135deg,#0a8f33,#14b8a6);color:#fff;flex:none}
+.mem b{display:block;font:600 14px var(--hd);line-height:1.2}.mem span{font-size:12px;color:var(--mut)}
+.steps{display:grid;gap:6px;margin-top:10px}
+.st{display:flex;gap:10px;align-items:center;padding:8px 10px;border:1px solid var(--ln);border-radius:10px;font-size:13px;color:var(--mut);transition:.3s}
+.st i{font:700 12px var(--mo);font-style:normal;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--ln);flex:none}
+.st.on{border-color:var(--g);color:var(--tx);background:rgba(61,245,106,.08)}.st.on i{background:var(--ac);color:var(--acx);border-color:var(--ac)}
+label{display:block;font-size:13px;color:var(--mut);margin:10px 0 2px}input[type=range]{width:100%;accent-color:var(--ac)}
+.formula{font:500 12px/1.6 var(--mo);background:var(--bg);border-radius:10px;padding:10px;margin-top:8px;white-space:pre;overflow-x:auto}
+.scroll{overflow-x:auto;border-radius:14px}.ckt{display:block;min-width:680px;width:100%;height:auto}
+.flow{stroke-dasharray:3 13;animation:fl 1s linear infinite}@keyframes fl{to{stroke-dashoffset:-16}}
+.b1,.b2{animation:bk 3s infinite}.b2{animation-delay:1.5s}@keyframes bk{0%,45%{opacity:1}55%,100%{opacity:.15}}.mc{animation:bk 3s infinite,hue 2.5s linear infinite}@keyframes hue{to{filter:hue-rotate(360deg)}}
+.cw{display:grid;grid-template-columns:1fr 1fr;gap:4px 14px;margin-top:8px;font-size:13px}.cw div{border-bottom:1px dashed var(--ln);padding:3px 0}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
+.cap{color:var(--mut);font-size:12px;margin:8px 2px 0}
+.sr{width:100%;font:inherit;padding:11px 14px;border-radius:999px;border:1px solid var(--ln);background:var(--card);color:var(--tx);outline:none}
+.sr:focus{border-color:var(--g);box-shadow:0 0 0 3px rgba(61,245,106,.18)}
+details{border-bottom:1px solid var(--ln);padding:10px 0}details:last-child{border:0}
+summary{cursor:pointer;font:600 15px var(--hd);list-style:none;display:flex;justify-content:space-between;gap:10px}
+summary::after{content:"+";color:var(--g);font-size:20px;line-height:1;transition:transform .25s}details[open] summary::after{transform:rotate(45deg)}
+details p{margin:8px 0 2px;color:var(--mut);animation:rise .35s both}
+nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--card);border-top:1px solid var(--ln);padding-bottom:env(safe-area-inset-bottom,0px)}
+nav button{flex:1;border:0;background:none;color:var(--mut);font:500 11px Inter,system-ui,sans-serif;padding:9px 2px;cursor:pointer;transition:.2s}
+nav button b{display:block;font-size:19px;font-weight:400;transition:transform .25s}nav button.on{color:var(--g)}nav button.on b{transform:translateY(-3px) scale(1.15)}
+@media (prefers-reduced-motion:reduce){.flow,.b1,.b2,.mc,.pane.on>*{animation:none}}
+</style>
+</head>
+<body>
+<section class="pane on" id="p-home">
+ <canvas id="hero"></canvas>
+ <div class="card" style="margin-top:12px"><div class="tag">Class XI-D · Science Project</div>
+  <h1 style="margin-top:6px">Arduino <span>Ultrasonic Radar</span> System</h1>
+  <p class="sub">A servo-mounted ultrasonic sensor sweeps 180°, measures the distance to objects and warns with LEDs, a buzzer and an LCD, while a laptop draws the live radar screen.</p>
+  <div class="chips" id="parts"></div></div>
+ <div class="card stats"><div><b>180°</b><span>Sweep</span></div><div><b>2–400</b><span>Range (cm)</span></div><div><b>20 cm</b><span>Alert at</span></div><div><b>9600</b><span>Baud</span></div></div>
+ <div class="card"><h2>Project team</h2><div class="team" id="team"></div></div>
+</section>
+
+<section class="pane" id="p-how">
+ <div class="card"><h2>How one measurement works</h2><canvas id="hc"></canvas>
+  <div class="steps" id="steps"></div>
+  <label>Move the object: <b id="vD">60</b> cm</label><input type="range" id="rD" min="5" max="200" value="60">
+  <div class="formula" id="hf"></div></div>
+ <div class="card"><h2>How the sweep finds objects</h2><canvas id="sw"></canvas>
+  <p class="cap">The servo turns one degree at a time. At each angle the sensor takes a reading, so the angle and distance together give an object’s position.</p></div>
+</section>
+
+<section class="pane" id="p-ckt">
+ <div class="card"><h2>Complete circuit diagram</h2>
+  <div class="scroll"><svg class="ckt" id="svg" viewBox="0 0 800 490" role="img" aria-label="Full circuit diagram of the Arduino radar"></svg></div>
+  <p class="cap">Swipe sideways to see the whole diagram. Moving dots show signal direction. Red “5V” and dark “GND” tags are all joined through the breadboard power rails. Both 250 Ω resistors sit on the breadboard.</p></div>
+ <div class="card"><h2>Connection list</h2><div class="cw" id="cw"></div></div>
+</section>
+
+<section class="pane" id="p-faq">
+ <div class="card"><h2>Questions & answers</h2><input class="sr" id="q" type="search" placeholder="Search questions, e.g. servo, LED, range…" autocomplete="off">
+  <div class="chips" id="sg"></div><p class="cap" id="fc"></p><div id="fl"></div></div>
+</section>
+
+<nav id="nav"><button class="on" data-t="home"><b>🏠</b>Home</button><button data-t="how"><b>🔊</b>How it works</button><button data-t="ckt"><b>🔌</b>Circuit</button><button data-t="faq"><b>❓</b>Q&amp;A</button></nav>
+
+<script>
+const $=s=>document.querySelector(s);let tab="home";
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{tab=b.dataset.t;
+ document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("on",x===b));
+ document.querySelectorAll(".pane").forEach(p=>p.classList.toggle("on",p.id==="p-"+tab));sizeAll();scrollTo(0,0)});
+
+/* ---------- Home content ---------- */
+["Arduino Uno","HC-SR04 Ultrasonic","Servo","Multicolor LED","Green LED","Buzzer","2 × 250 Ω","I2C LCD","Breadboard","Jumper wires"].forEach(p=>$("#parts").insertAdjacentHTML("beforeend",`<span class="chip">${p}</span>`));
+[["Arnav Singh","AS"],["Aviral Pandey","AP"],["Taran Goel","TG"],["Yuvraj","Y"]].forEach(m=>$("#team").insertAdjacentHTML("beforeend",`<div class="mem"><div class="av">${m[1]}</div><div><b>${m[0]}</b><span>Class XI-D</span></div></div>`));
+["Trigger pulse","40 kHz sound travels out","Echo returns","Time becomes distance"].forEach((s,i)=>$("#steps").insertAdjacentHTML("beforeend",`<div class="st"><i>${i+1}</i>${s}</div>`));
+
+/* ---------- Canvas helpers ---------- */
+const M='"JetBrains Mono",monospace';
+const cv={hero:$("#hero"),hc:$("#hc"),sw:$("#sw")},dim={};
+function fit(k,ratio,fh){const c=cv[k],d=devicePixelRatio||1,w=c.clientWidth;if(!w)return;const h=fh||w*ratio;c.style.height=h+"px";c.width=w*d;c.height=h*d;c.getContext("2d").setTransform(d,0,0,d,0,0);dim[k]={w,h}}
+function sizeAll(){fit("hero",.56);fit("hc",0,170);fit("sw",0,190)}addEventListener("resize",sizeAll);
+const polar=(cx,cy,a,r)=>{const t=a*Math.PI/180;return[cx+r*Math.cos(t),cy-r*Math.sin(t)]};
+
+/* ---------- Hero radar (showcase) ---------- */
+const BL=[[35,.55,.5,.3,6],[72,.82,.7,1.1,5],[108,.38,.4,2,4],[148,.7,.6,3.1,7],[92,.62,.3,4,3],[125,.88,.5,5,5]].map(b=>({a0:b[0],d0:b[1],s:b[2],p:b[3],am:b[4],t:-9e3}));
+let hudA=0,hudAlert=false;
+function drawHero(now){const D=dim.hero;if(!D)return;const g=cv.hero.getContext("2d"),{w,h}=D,cx=w/2,cy=h-26,R=Math.min(w*.45,h-52),t=now/1000;
+ const ang=90+88*Math.sin(t*.8),dir=Math.cos(t*.8)>=0?1:-1;hudA=Math.round(ang);
+ g.fillStyle="#04100a";g.fillRect(0,0,w,h);
+ const gr=g.createRadialGradient(cx,cy,0,cx,cy,R);gr.addColorStop(0,"rgba(40,160,80,.28)");gr.addColorStop(1,"rgba(40,160,80,0)");g.fillStyle=gr;g.fillRect(0,0,w,h);
+ g.lineCap="round";g.lineWidth=R*.016+1;
+ for(let k=0;k<46;k++){const a=ang-dir*k*1.1;if(a<0||a>180)continue;g.strokeStyle=`rgba(61,245,106,${(1-k/46)*.32})`;g.beginPath();g.moveTo(cx,cy);g.lineTo(...polar(cx,cy,a,R));g.stroke()}
+ g.lineWidth=1.2;g.strokeStyle="rgba(98,245,31,.55)";
+ for(let i=1;i<=4;i++){g.beginPath();g.arc(cx,cy,R*i/4,Math.PI,2*Math.PI);g.stroke()}
+ g.beginPath();g.moveTo(cx-R-10,cy);g.lineTo(cx+R+10,cy);g.stroke();
+ for(let a=30;a<=150;a+=30){g.beginPath();g.moveTo(cx,cy);g.lineTo(...polar(cx,cy,a,R));g.stroke()}
+ for(let a=0;a<=180;a+=5){const l=a%30?4:9;g.beginPath();g.moveTo(...polar(cx,cy,a,R));g.lineTo(...polar(cx,cy,a,R+l));g.stroke()}
+ g.fillStyle="rgba(98,245,31,.85)";g.font=`11px ${M}`;g.textAlign="center";g.textBaseline="middle";
+ for(let a=0;a<=180;a+=30){const[x,y]=polar(cx,cy,a,R+22);g.fillText(a+"°",x,a%180?y:y-8)}
+ g.textAlign="right";g.textBaseline="alphabetic";for(let i=1;i<=4;i++)g.fillText(i*10+"cm",cx+R*i/4-4,cy-5);
+ for(const o of BL){const a=o.a0+Math.sin(t*o.s+o.p)*o.am,d=o.d0+Math.sin(t*o.s*.7+o.p)*.05;
+  if(Math.abs(ang-a)<2.4){o.t=now;hudAlert=d<.5}
+  const al=Math.max(0,1-(now-o.t)/2600);if(al<=0)continue;const[px,py]=polar(cx,cy,a,d*R),[ex,ey]=polar(cx,cy,a,R);
+  g.strokeStyle=`rgba(255,70,70,${al*.85})`;g.lineWidth=R*.014+2;g.beginPath();g.moveTo(px,py);g.lineTo(ex,ey);g.stroke();
+  g.fillStyle=`rgba(255,235,235,${al})`;g.shadowColor="#ff4646";g.shadowBlur=14*al;g.beginPath();g.arc(px,py,4.5,0,7);g.fill();g.shadowBlur=0;
+  g.strokeStyle=`rgba(255,120,120,${al*.7})`;g.lineWidth=1.5;g.beginPath();g.arc(px,py,6+(1-al)*22,0,7);g.stroke()}
+ g.save();g.shadowColor="#3df56a";g.shadowBlur=14;g.strokeStyle="#7dffa0";g.lineWidth=3;g.beginPath();g.moveTo(cx,cy);g.lineTo(...polar(cx,cy,ang,R));g.stroke();g.restore();
+ g.font=`12px ${M}`;g.textAlign="left";g.fillStyle="#62f51f";g.fillText("ANGLE "+String(hudA).padStart(3,"0")+"°",14,22);
+ g.textAlign="right";const pulse=.55+.45*Math.sin(t*6);g.fillStyle=hudAlert?`rgba(255,80,80,${pulse})`:`rgba(61,245,106,${pulse})`;g.fillText((hudAlert?"● ALERT":"● SCANNING"),w-14,22)}
+
+/* ---------- How it works animations ---------- */
+let lastSt=-1;
+function drawHow(now){const D=dim.hc;if(!D)return;const g=cv.hc.getContext("2d"),{w,h}=D,d=+$("#rD").value,sx=44,ox=sx+34+(d-5)/195*(w-sx-110),cy=h/2-8,T=4200,p=(now%T)/T;
+ g.fillStyle="#04100a";g.fillRect(0,0,w,h);
+ g.strokeStyle="#1d3a27";g.setLineDash([4,5]);g.beginPath();g.moveTo(sx,h-20);g.lineTo(ox,h-20);g.stroke();g.setLineDash([]);
+ g.fillStyle="#86ad90";g.font=`11px ${M}`;g.textAlign="center";g.fillText(d+" cm",(sx+ox)/2,h-6);
+ g.fillStyle="#1976d2";g.fillRect(10,cy-27,30,54);g.fillStyle="#d6f5ff";g.beginPath();g.arc(25,cy-13,7,0,7);g.arc(25,cy+13,7,0,7);g.fill();
+ let st=3,fx=null,col="61,245,106",dir=1;
+ if(p<.08)st=0;else if(p<.45){st=1;fx=sx+(ox-sx)*(p-.08)/.37}else if(p<.82){st=2;col="255,176,32";dir=-1;fx=ox-(ox-sx)*(p-.45)/.37}
+ if(p<.08){g.strokeStyle="#ffd54f";g.lineWidth=3;g.beginPath();g.moveTo(25,cy-27);g.lineTo(25,cy-40);g.stroke()}
+ if(fx!==null){g.lineWidth=2.2;for(let i=0;i<5;i++){g.strokeStyle=`rgba(${col},${1-i*.19})`;g.beginPath();g.arc(fx-dir*i*11,cy,12+i*3,-.8,.8);if(dir<0){g.stroke()}else g.stroke()}}
+ const hit=p>.43&&p<.52,f=hit?1-(p-.43)/.09:0;
+ g.fillStyle=`rgb(${255},${82+f*100|0},${82+f*100|0})`;g.shadowColor="#ff5252";g.shadowBlur=hit?22:6;g.fillRect(ox,cy-32,16,64);g.shadowBlur=0;
+ const pr=p<.08?0:p>=.82?1:Math.min(1,(p-.08)/.74),us=Math.round(d*2/.0343*pr);
+ g.textAlign="right";g.font=`13px ${M}`;g.fillStyle="#ffd54f";g.fillText("⏱ "+us.toLocaleString("en-US")+" µs",w-12,22);
+ if(st===3){g.fillStyle="#3df56a";g.textAlign="center";g.font=`700 16px ${M}`;g.fillText("= "+d+" cm",(sx+ox)/2,cy-46)}
+ if(st!==lastSt){document.querySelectorAll(".st").forEach((e,i)=>e.classList.toggle("on",i===st));lastSt=st}}
+function drawSw(now){const D=dim.sw;if(!D)return;const g=cv.sw.getContext("2d"),{w,h}=D,cx=w/2,cy=h-16,R=h-40,t=now/1000,ang=90+80*Math.sin(t*.9),OA=122,OD=.62;
+ g.fillStyle="#04100a";g.fillRect(0,0,w,h);g.strokeStyle="rgba(98,245,31,.4)";g.lineWidth=1;
+ for(let i=1;i<=3;i++){g.beginPath();g.arc(cx,cy,R*i/3,Math.PI,2*Math.PI);g.stroke()}
+ g.beginPath();g.moveTo(cx-R,cy);g.lineTo(cx+R,cy);g.stroke();
+ g.fillStyle="rgba(61,245,106,.16)";g.beginPath();g.moveTo(cx,cy);g.arc(cx,cy,R,-(ang+9)*Math.PI/180,-(ang-9)*Math.PI/180);g.closePath();g.fill();
+ g.save();g.shadowColor="#3df56a";g.shadowBlur=10;g.strokeStyle="#7dffa0";g.lineWidth=3;g.beginPath();g.moveTo(cx,cy);g.lineTo(...polar(cx,cy,ang,R));g.stroke();g.restore();
+ const on=Math.abs(ang-OA)<9,[ox,oy]=polar(cx,cy,OA,OD*R);
+ g.fillStyle=on?"#ff4646":"#7a2a2a";g.shadowColor="#ff4646";g.shadowBlur=on?20:0;g.beginPath();g.arc(ox,oy,on?9:7,0,7);g.fill();g.shadowBlur=0;
+ g.fillStyle="#1976d2";g.beginPath();g.arc(cx,cy,10,0,7);g.fill();
+ g.font=`12px ${M}`;g.textAlign="left";g.fillStyle=on?"#ff8080":"#62f51f";g.fillText(on?`Object found: ${Math.round(ang)}°, ${Math.round(OD*40)} cm`:`Scanning… ${Math.round(ang)}°`,12,20)}
+$("#rD").oninput=()=>{const d=+$("#rD").value,t=Math.round(d*2/.0343);$("#vD").textContent=d;$("#hf").textContent=`duration = ${t.toLocaleString("en-US")} µs\ndistance = duration × 0.034 ÷ 2\n         = ${d} cm`};$("#rD").oninput();
+
+/* ---------- Circuit diagram ---------- */
+const T=(x,y,t,o={})=>`<text x="${x}" y="${y}" fill="${o.c||"#cfeee2"}" font-size="${o.s||13}" text-anchor="${o.a||"start"}"${o.w?` font-weight="${o.w}"`:""}>${t}</text>`;
+const Wr=(d,c)=>`<path d="${d}" fill="none" stroke="${c}" stroke-opacity=".35" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path class="flow" d="${d}" fill="none" stroke="${c}" stroke-width="3" stroke-linecap="round"/>`;
+const Tg=(x,y,t)=>{const v=t==="5V",w=v?30:38;return`<rect x="${x}" y="${y-9}" width="${w}" height="18" rx="5" fill="${v?"#d32f2f":"#263238"}" stroke="${v?"#ff8a80":"#90a4ae"}"/>`+T(x+w/2,y+4,t,{a:"middle",s:11,w:700,c:"#fff"})};
+const Ln=(a,b,c,d)=>`<path d="M${a} ${b}H${c}${d!==undefined?"V"+d:""}" stroke="#90a4ae" stroke-width="2" fill="none"/>`;
+const Bx=(x,y,w,h,t,s)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="9" fill="#10261c" stroke="#3a6b52" stroke-width="1.5"/>`+T(x+w/2,y+19,t,{a:"middle",w:700,s:14})+(s?T(x+w/2,y+35,s,{a:"middle",s:11,c:"#86ad90"}):"");
+const C={trig:"#fb8c00",echo:"#42a5f5",sig:"#ffd54f",d4:"#ff5252",d5:"#4cd964",d6:"#b388ff",sda:"#26c6da",scl:"#f06292"};
+let s=`<defs><linearGradient id="mc" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff3b3b"/><stop offset=".5" stop-color="#3b82ff"/><stop offset="1" stop-color="#ffd54f"/></linearGradient></defs><rect width="800" height="490" rx="14" fill="#071410"/>`;
+s+=`<rect x="300" y="48" width="200" height="430" rx="12" fill="#0b5d67" stroke="#2dd4bf" stroke-width="2"/><rect x="368" y="34" width="64" height="26" rx="3" fill="#b0bec5"/>`+T(400,52,"USB",{a:"middle",s:11,c:"#263238",w:700})+T(400,275,"ARDUINO",{a:"middle",s:17,w:700})+T(400,296,"UNO",{a:"middle",s:17,w:700});
+const UL={D9:130,D10:170,D11:210,"5V":360,GND:395},UR={D4:110,D5:150,D6:190,A4:250,A5:290};
+for(const k in UL)s+=`<circle cx="300" cy="${UL[k]}" r="4" fill="#fff"/>`+T(310,UL[k]+4,k,{s:12});
+for(const k in UR)s+=`<circle cx="500" cy="${UR[k]}" r="4" fill="#fff"/>`+T(490,UR[k]+4,k,{s:12,a:"end"});
+s+=Ln(300,360,270)+Tg(240,360,"5V")+Ln(300,395,270)+Tg(232,395,"GND");
+/* sensor */
+s+=Bx(30,90,120,135,"HC-SR04","Ultrasonic");
+[["VCC",125],["Trig",150],["Echo",175],["GND",200]].forEach(([n,y])=>s+=`<circle cx="150" cy="${y}" r="4" fill="#fff"/>`+T(142,y+4,n,{a:"end",s:12}));
+s+=Ln(150,125,182)+Tg(182,125,"5V")+Ln(150,200,182)+Tg(182,200,"GND")+Wr("M150 150H235V130H300",C.trig)+Wr("M150 175H260V170H300",C.echo);
+/* servo */
+s+=Bx(30,245,120,105,"Servo","carries the sensor");
+[["Signal",290],["VCC",315],["GND",340]].forEach(([n,y])=>s+=`<circle cx="150" cy="${y}" r="4" fill="#fff"/>`+T(142,y+4,n,{a:"end",s:12}));
+s+=Wr("M150 290H250V210H300",C.sig)+Ln(150,315,182)+Tg(182,315,"5V")+Ln(150,340,182)+Tg(182,340,"GND");
+/* LEDs + resistors + buzzer */
+[[110,C.d4,"url(#mc)","Multicolor LED","mc"],[150,C.d5,"#2ee86a","Green LED","b2"]].forEach(([y,c,f,n,b])=>{
+ s+=Wr(`M500 ${y}H530`,c)+`<rect x="530" y="${y-8}" width="50" height="16" rx="3" fill="#8d6e63"/>`+T(555,y+4,"250Ω",{a:"middle",s:10,w:700,c:"#fff"})+Wr(`M580 ${y}H622`,c)
+ +`<circle class="${b}" cx="634" cy="${y}" r="12" fill="${f}" stroke="#fff"/>`+T(634,y-18,n,{a:"middle",s:11,c:"#86ad90"})+Ln(646,y,672)+Tg(672,y,"GND")});
+s+=Wr("M500 190H622",C.d6)+`<circle cx="634" cy="190" r="12" fill="#ffb020" stroke="#fff"/>`+T(634,194,"♪",{a:"middle",s:14,c:"#333",w:700})+T(634,172,"Buzzer",{a:"middle",s:11,c:"#86ad90"})+Ln(646,190,672)+Tg(672,190,"GND");
+/* LCD */
+s+=`<rect x="590" y="240" width="185" height="125" rx="9" fill="#10261c" stroke="#3a6b52" stroke-width="1.5"/><rect x="606" y="268" width="153" height="42" rx="4" fill="#9bd16b"/>`
+ +T(614,285,"Angle: 108 deg",{c:"#1b3a0a",s:12,w:700})+T(614,302,"Dist: 13cm ALERT",{c:"#1b3a0a",s:12,w:700})+T(682,356,"I2C LCD 16×2",{a:"middle",w:700,s:13})
+ +T(630,257,"GND",{a:"middle",s:11})+T(700,257,"VCC",{a:"middle",s:11})
+ +`<path d="M630 240V232M700 240V232" stroke="#90a4ae" stroke-width="2"/>`+Tg(611,223,"GND")+Tg(685,223,"5V")
+ +`<circle cx="590" cy="330" r="4" fill="#fff"/><circle cx="590" cy="352" r="4" fill="#fff"/>`+T(598,334,"SDA",{s:11})+T(598,356,"SCL",{s:11})
+ +Wr("M500 250H565V330H590",C.sda)+Wr("M500 290H550V352H590",C.scl);
+$("#svg").innerHTML=s;
+const CW=[["HC-SR04 VCC","5V","#d32f2f"],["HC-SR04 Trig","D9",C.trig],["HC-SR04 Echo","D10",C.echo],["HC-SR04 GND","GND","#90a4ae"],["Servo signal","D11",C.sig],["Servo power","5V","#d32f2f"],["Servo GND","GND","#90a4ae"],["Multicolor LED via 250 Ω","D4",C.d4],["Green LED via 250 Ω","D5",C.d5],["Both LED cathodes","GND","#90a4ae"],["Buzzer +","D6",C.d6],["Buzzer −","GND","#90a4ae"],["LCD VCC","5V","#d32f2f"],["LCD GND","GND","#90a4ae"],["LCD SDA","A4",C.sda],["LCD SCL","A5",C.scl]];
+$("#cw").innerHTML=CW.map(r=>`<div><i class="dot" style="background:${r[2]}"></i>${r[0]} → <b>${r[1]}</b></div>`).join("");
+
+/* ---------- Q&A ---------- */
+const FAQ=[
+["What is this project?","An Arduino-based radar (more exactly, a sonar) system. A servo turns an ultrasonic sensor through a half circle, the sensor measures the distance to objects at every angle, and the result is shown on an LCD, with LEDs and a buzzer for alerts, and as a live radar screen on the laptop."],
+["How does it work in simple words?","It works like a bat. The sensor sends out a very high-pitched sound that humans can’t hear, waits for the echo and measures how long it took. A long time means the object is far, a short time means it is close. The servo turns the sensor so every direction gets checked."],
+["How does the ultrasonic sensor measure distance?","When the Trig pin is pulsed for 10 µs, the HC-SR04 sends eight pulses of 40 kHz sound. The Echo pin then stays HIGH until the echo returns. The Arduino times this with pulseIn() and calculates distance = duration × 0.034 ÷ 2."],
+["Why is the time divided by 2?","The sound travels to the object and back, so the measured time covers the distance twice. Dividing by 2 gives the one-way distance."],
+["What does the servo do?","It rotates the sensor like a radar dish. At every degree the Arduino takes one reading, so together they scan a 180° half circle. Without the servo we could only measure straight ahead."],
+["What do the multicolor and green LEDs mean?","Green means safe: nothing is closer than 20 cm. The multicolor LED lights up as the alert signal when an object is within 20 cm."],
+["Why is there a buzzer?","A light can be missed but a sound is hard to ignore. The buzzer sounds together with the multicolor LED so the alert is noticed even if nobody is looking at the project."],
+["Why do the LEDs need 250 Ω resistors?","An LED has almost no resistance of its own, so without a resistor too much current would flow and it could burn out (and damage the Arduino pin). A 250 Ω resistor limits it to about 12 mA, which is bright and safe."],
+["What does the LCD show?","The current servo angle, the measured distance in centimetres and the status SAFE or ALERT, updated at every step of the sweep."],
+["What is I2C and why is it used for the LCD?","I2C is a two-wire communication method: SDA carries data and SCL carries the clock. It lets the 16×2 LCD work with only two Arduino pins (A4 and A5) instead of six or more."],
+["What does the Arduino Uno do?","It is the brain of the project. It moves the servo, triggers the sensor, converts echo time to distance, decides between safe and alert, drives the LEDs, buzzer and LCD, and sends the data to the laptop."],
+["What is Processing and why do we use it?","Processing is a free tool for making graphics. Our Processing 4 sketch reads the angle and distance from the Arduino and draws the green sweep line and the red object lines on the laptop screen."],
+["How does the data reach the laptop?","Through the USB cable using serial communication at 9600 baud. The Arduino sends text like 108,13. (angle, distance, full stop) and Processing splits it at the comma."],
+["How does the radar screen place an object?","Each reading is an angle and a distance (polar coordinates). Processing converts it to a screen position with x = distance × cos(angle) and y = distance × sin(angle)."],
+["What is the range of the sensor?","About 2 cm to 400 cm. Our radar screen shows 40 cm by default, and the servo covers 0° to 180°."],
+["What does 999 or “Out of Range” mean?","No echo came back in time, so there is nothing within the sensor’s range at that angle."],
+["Can the alert distance be changed?","Yes. Change ALERT_DIST in the Arduino code (and ALERT_CM in the Processing code to match). It is set to 20 cm now."],
+["What is hard for the sensor to detect?","Soft things like cloth or foam (they absorb sound), very thin objects, and surfaces tilted more than about 15°, because the echo bounces away instead of returning."],
+["Is it the same as a real radar?","Not exactly. Real radar uses radio waves and can see aeroplanes many kilometres away. Ours uses sound, which is how sonar works, so it suits short range, but the idea of sweeping and plotting is the same."],
+["Does it work in the dark?","Yes. It uses sound, not light, so it works in total darkness."],
+["Why is a breadboard used?","It lets us join all the parts with jumper wires and shared 5 V and GND rails without soldering, so the circuit is easy to build and change."],
+["Where is this idea used in real life?","Car parking sensors, obstacle-avoiding robots, security alarms, ship and submarine sonar, and room mapping."],
+["Can it measure the speed of moving objects?","Not in this version. It shows where an object is at each moment. Speed could be added by comparing readings between sweeps."],
+["How can the project be improved?","Add a Bluetooth module for a phone link, filter the readings to reduce noise, track moving objects, or add a second sensor for wider coverage."],
+["Who made this project?","Arnav Singh, Aviral Pandey, Taran Goel and Yuvraj of Class XI-D."]];
+function rf(){const ws=$("#q").value.toLowerCase().split(/\s+/).filter(Boolean),m=FAQ.filter(f=>{const t=(f[0]+" "+f[1]).toLowerCase();return ws.every(w=>t.includes(w))});
+ $("#fl").innerHTML=m.map(f=>`<details${ws.length&&m.length<=3?" open":""}><summary>${f[0]}</summary><p>${f[1]}</p></details>`).join("")||`<p class="cap">No matching question. Try a word like servo, LED, range or Processing.</p>`;
+ $("#fc").textContent=m.length+" of "+FAQ.length+" questions"}
+$("#q").oninput=rf;["servo","LED","range","Processing","LCD","real radar","buzzer"].forEach(w=>{const b=document.createElement("button");b.className="chip";b.textContent=w;b.onclick=()=>{$("#q").value=w;rf()};$("#sg").appendChild(b)});rf();
+
+/* ---------- Loop ---------- */
+sizeAll();
+(function loop(now){if(tab==="home")drawHero(now);else if(tab==="how"){drawHow(now);drawSw(now)}requestAnimationFrame(loop)})(0);
+</script>
+</body>
+</html>
